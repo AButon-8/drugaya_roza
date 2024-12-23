@@ -123,6 +123,7 @@ raw_roza_texts_tbl <- raw_all_roza_texts |>
 # Объединяем две таблицы (ссылки, названия текстов и сами тексты)
 all_roza_proza <- all_links |> 
   mutate(text = raw_roza_texts_tbl)
+
 ```
 
 <br/>
@@ -154,4 +155,126 @@ all_roza_cleaned <- all_roza_proza |>
   mutate(text = gsub("\\b([Шш]ое|[Шш]оэ|[Шш]\\.)\\S*", "Schönlank_\\1", text)) |> 
   mutate(text = gsub("\\b([Мм]атиль\\S*)", "MATILDA_\\1", text)) |> 
   mutate(text = gsub("\\b([Лл]улу)", "LULU_\\1", text))
+
+```
+
+<br/>
+
+## Аннотирование текста
+
+<br/> **Скачиваем и загружаем модель. Аннотируем.**
+
+```{r}
+# Скачиваем модель в рабочую директорию
+#| echo: false
+udpipe_download_model(language = "russian-syntagrus")
+
+# загружаем модель
+#| echo: false
+russian_syntagrus <- udpipe_load_model(file = "russian-syntagrus-ud-2.5-191206.udpipe")
+
+# Оператор присваивания создает переменную params.
+params <- tribble(
+  ~tbl, ~output, ~input, ~token,
+  all_roza_cleaned, "word", "text", "words"
+)
+
+params
+
+# аннотируем
+##| echo: false
+all_roza_annotate <- udpipe_annotate(
+  russian_syntagrus, 
+  all_roza_cleaned$text, 
+  doc_id = all_roza_proza$title)
+
+# преобразуем аннотированное в тибл
+##| echo: false
+all_roza_ann_tbl <- as_tibble(all_roza_annotate) |> 
+  select(-paragraph_id, -sentence, -xpos) |> 
+  as_tibble()
+```
+
+<br/>
+
+## Токенизация
+
+<br/>
+
+**1. Токенизируем.**
+
+```{r}
+all_roza_tokens <- all_roza_cleaned |> 
+  unnest_tokens("word",
+                "text",
+                to_lower = TRUE,
+                strip_punct = TRUE) |> 
+  select(-id_text)
+
+all_roza_tokens
+```
+
+<br/>
+
+**2. Создаем списки стоп-слов**
+
+```{r}
+# Загружаем список список стоп-слов ('nltk')
+library(stopwords)
+stopwords("ru")
+
+stopwords_ru <- c(stopwords("ru", source = "nltk"))
+
+# Убираем повторы и упорядочиваем по алфавиту
+stopwords_ru <- sort(unique(stopwords_ru))
+stopwords_ru
+
+# Добавляем дополнительные стоп-слова
+other <- c(" ", "", "это", "который", "роза", 
+           "весь", "мочь", "свой", "твой", "очень", 
+           "каждый", "ваш", "изза", "поэтому", 
+           "хотя", "сразу", "наш", "все", "еще", "ее", "её", 
+           "тебе", "твое", "кроме", "мои", "dieser", "in", 
+           "der", "dir", "dein", "die", "den", "ich", "und",
+           "всё", "ещё", "твоё", "моё", "неё", "которые", 
+           "моей", "лишь", "своей", "моего", "которых", 
+           "таких", "таким", "своими", "ними", "также", "мной", 
+           "крайней", "мере", "конце", "концов", "которой", 
+           "которое", "вообще", "свои", "которая", "например", 
+           "такие", "этим", "такую", "эта", "каким", "которую", 
+           "to")
+```
+
+<br/>
+
+**3. Удаляем стоп-слова. Делаем две tidy таблицы**
+
+```{r}
+# Делаем tidy таблицу с лемматизированными данными: 
+# Переименовываем колонку lemma
+all_roza_ann_tbl <- all_roza_ann_tbl |> 
+  mutate(word = lemma)
+
+# Переводим колонку word в нижний регистр
+# Удаляем все знаки препинания из столбца word
+# Убираем все комбинации ".»", встречающиеся перед границей слова в столбце lemma
+# Удаляем стоп слова + доп. стоп-слова
+all_roza_tidy <- all_roza_ann_tbl |>
+  mutate(word = tolower(str_trim(word))) |>
+  mutate(word = gsub("[[:punct:]]", "", word)) |> 
+  mutate(lemma = gsub("\\.»\\b", "", lemma)) |>
+  anti_join(tibble(word = stopwords_ru)) |> 
+  filter(!word %in% other)
+
+all_roza_tidy
+
+
+# Делаем tidy таблицу с токенизированными данными
+# Необходимость в токенизированной таблице возникала из-за грязных исходных данных.
+# Невычитанный текст с множеством опечаток и ошибок неверно лемматизировался.
+rp_token_tidy <- all_roza_tokens |> 
+  anti_join(tibble(word = stopwords_ru)) |> 
+  filter(!word %in% other)
+
+rp_token_tidy
 ```

@@ -158,6 +158,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#сбор-данных" id="toc-сбор-данных" class="nav-link active" data-scroll-target="#сбор-данных">Сбор данных</a></li>
   <li><a href="#предобработка-данных" id="toc-предобработка-данных" class="nav-link" data-scroll-target="#предобработка-данных">Предобработка данных</a></li>
+  <li><a href="#аннотирование-текста" id="toc-аннотирование-текста" class="nav-link" data-scroll-target="#аннотирование-текста">Аннотирование текста</a></li>
+  <li><a href="#токенизация" id="toc-токенизация" class="nav-link" data-scroll-target="#токенизация">Токенизация</a></li>
   </ul>
 </nav>
 </nav>
@@ -431,6 +433,224 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">text =</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b([Шш]ое|[Шш]оэ|[Шш]</span><span class="sc">\\</span><span class="st">.)</span><span class="sc">\\</span><span class="st">S*"</span>, <span class="st">"Schönlank_</span><span class="sc">\\</span><span class="st">1"</span>, text)) <span class="sc">|&gt;</span> </span>
 <span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">text =</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b([Мм]атиль</span><span class="sc">\\</span><span class="st">S*)"</span>, <span class="st">"MATILDA_</span><span class="sc">\\</span><span class="st">1"</span>, text)) <span class="sc">|&gt;</span> </span>
 <span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">text =</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b([Лл]улу)"</span>, <span class="st">"LULU_</span><span class="sc">\\</span><span class="st">1"</span>, text))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+</section>
+<section id="аннотирование-текста" class="level2">
+<h2 class="anchored" data-anchor-id="аннотирование-текста">Аннотирование текста</h2>
+<p><br> <strong>Скачиваем и загружаем модель. Аннотируем.</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Скачиваем модель в рабочую директорию</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">udpipe_download_model</span>(<span class="at">language =</span> <span class="st">"russian-syntagrus"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           language
+1 russian-syntagrus
+                                                                                 file_model
+1 /Users/anastasiabogdanova/R_directory/Drugaya_Roza/russian-syntagrus-ud-2.5-191206.udpipe
+                                                                                                                                       url
+1 https://raw.githubusercontent.com/jwijffels/udpipe.models.ud.2.5/master/inst/udpipe-ud-2.5-191206/russian-syntagrus-ud-2.5-191206.udpipe
+  download_failed download_message
+1           FALSE               OK</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># загружаем модель</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>russian_syntagrus <span class="ot">&lt;-</span> <span class="fu">udpipe_load_model</span>(<span class="at">file =</span> <span class="st">"russian-syntagrus-ud-2.5-191206.udpipe"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Оператор присваивания создает переменную params.</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>tbl, <span class="sc">~</span>output, <span class="sc">~</span>input, <span class="sc">~</span>token,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  all_roza_cleaned, <span class="st">"word"</span>, <span class="st">"text"</span>, <span class="st">"words"</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>params</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  tbl                output input token
+  &lt;list&gt;             &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;
+1 &lt;tibble [184 × 4]&gt; word   text  words</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># аннотируем</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="do">##| echo: false</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>all_roza_annotate <span class="ot">&lt;-</span> <span class="fu">udpipe_annotate</span>(</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  russian_syntagrus, </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  all_roza_cleaned<span class="sc">$</span>text, </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">doc_id =</span> all_roza_proza<span class="sc">$</span>title)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># преобразуем аннотированное в тибл</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="do">##| echo: false</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>all_roza_ann_tbl <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(all_roza_annotate) <span class="sc">|&gt;</span> </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>paragraph_id, <span class="sc">-</span>sentence, <span class="sc">-</span>xpos) <span class="sc">|&gt;</span> </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+</section>
+<section id="токенизация" class="level2">
+<h2 class="anchored" data-anchor-id="токенизация">Токенизация</h2>
+<p><br></p>
+<p><strong>1. Токенизируем.</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>all_roza_tokens <span class="ot">&lt;-</span> all_roza_cleaned <span class="sc">|&gt;</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(<span class="st">"word"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">"text"</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">to_lower =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">strip_punct =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>id_text)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>all_roza_tokens</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 113,507 × 3
+   title       link                             word        
+   &lt;chr&gt;       &lt;chr&gt;                            &lt;chr&gt;       
+ 1 Другая Роза https://proza.ru/2014/04/05/1003 письма      
+ 2 Другая Роза https://proza.ru/2014/04/05/1003 больше      
+ 3 Другая Роза https://proza.ru/2014/04/05/1003 чем         
+ 4 Другая Роза https://proza.ru/2014/04/05/1003 воспоминания
+ 5 Другая Роза https://proza.ru/2014/04/05/1003 на          
+ 6 Другая Роза https://proza.ru/2014/04/05/1003 них         
+ 7 Другая Роза https://proza.ru/2014/04/05/1003 запеклась   
+ 8 Другая Роза https://proza.ru/2014/04/05/1003 кровь       
+ 9 Другая Роза https://proza.ru/2014/04/05/1003 событий     
+10 Другая Роза https://proza.ru/2014/04/05/1003 это         
+# ℹ 113,497 more rows</code></pre>
+</div>
+</div>
+<p><br></p>
+<p><strong>2. Создаем списки стоп-слов</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Загружаем список список стоп-слов ('nltk')</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stopwords)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">stopwords</span>(<span class="st">"ru"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] "и"       "в"       "во"      "не"      "что"     "он"      "на"     
+  [8] "я"       "с"       "со"      "как"     "а"       "то"      "все"    
+ [15] "она"     "так"     "его"     "но"      "да"      "ты"      "к"      
+ [22] "у"       "же"      "вы"      "за"      "бы"      "по"      "только" 
+ [29] "ее"      "мне"     "было"    "вот"     "от"      "меня"    "еще"    
+ [36] "нет"     "о"       "из"      "ему"     "теперь"  "когда"   "даже"   
+ [43] "ну"      "вдруг"   "ли"      "если"    "уже"     "или"     "ни"     
+ [50] "быть"    "был"     "него"    "до"      "вас"     "нибудь"  "опять"  
+ [57] "уж"      "вам"     "сказал"  "ведь"    "там"     "потом"   "себя"   
+ [64] "ничего"  "ей"      "может"   "они"     "тут"     "где"     "есть"   
+ [71] "надо"    "ней"     "для"     "мы"      "тебя"    "их"      "чем"    
+ [78] "была"    "сам"     "чтоб"    "без"     "будто"   "человек" "чего"   
+ [85] "раз"     "тоже"    "себе"    "под"     "жизнь"   "будет"   "ж"      
+ [92] "тогда"   "кто"     "этот"    "говорил" "того"    "потому"  "этого"  
+ [99] "какой"   "совсем"  "ним"     "здесь"   "этом"    "один"    "почти"  
+[106] "мой"     "тем"     "чтобы"   "нее"     "кажется" "сейчас"  "были"   
+[113] "куда"    "зачем"   "сказать" "всех"    "никогда" "сегодня" "можно"  
+[120] "при"     "наконец" "два"     "об"      "другой"  "хоть"    "после"  
+[127] "над"     "больше"  "тот"     "через"   "эти"     "нас"     "про"    
+[134] "всего"   "них"     "какая"   "много"   "разве"   "сказала" "три"    
+[141] "эту"     "моя"     "впрочем" "хорошо"  "свою"    "этой"    "перед"  
+[148] "иногда"  "лучше"   "чуть"    "том"     "нельзя"  "такой"   "им"     
+[155] "более"   "всегда"  "конечно" "всю"     "между"  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>stopwords_ru <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">stopwords</span>(<span class="st">"ru"</span>, <span class="at">source =</span> <span class="st">"nltk"</span>))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Убираем повторы и упорядочиваем по алфавиту</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>stopwords_ru <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(stopwords_ru))</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>stopwords_ru</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] "а"       "без"     "более"   "больше"  "будет"   "будто"   "бы"     
+  [8] "был"     "была"    "были"    "было"    "быть"    "в"       "вам"    
+ [15] "вас"     "вдруг"   "ведь"    "во"      "вот"     "впрочем" "все"    
+ [22] "всегда"  "всего"   "всех"    "всю"     "вы"      "где"     "да"     
+ [29] "даже"    "два"     "для"     "до"      "другой"  "его"     "ее"     
+ [36] "ей"      "ему"     "если"    "есть"    "еще"     "ж"       "же"     
+ [43] "за"      "зачем"   "здесь"   "и"       "из"      "или"     "им"     
+ [50] "иногда"  "их"      "к"       "как"     "какая"   "какой"   "когда"  
+ [57] "конечно" "кто"     "куда"    "ли"      "лучше"   "между"   "меня"   
+ [64] "мне"     "много"   "может"   "можно"   "мой"     "моя"     "мы"     
+ [71] "на"      "над"     "надо"    "наконец" "нас"     "не"      "него"   
+ [78] "нее"     "ней"     "нельзя"  "нет"     "ни"      "нибудь"  "никогда"
+ [85] "ним"     "них"     "ничего"  "но"      "ну"      "о"       "об"     
+ [92] "один"    "он"      "она"     "они"     "опять"   "от"      "перед"  
+ [99] "по"      "под"     "после"   "потом"   "потому"  "почти"   "при"    
+[106] "про"     "раз"     "разве"   "с"       "сам"     "свою"    "себе"   
+[113] "себя"    "сейчас"  "со"      "совсем"  "так"     "такой"   "там"    
+[120] "тебя"    "тем"     "теперь"  "то"      "тогда"   "того"    "тоже"   
+[127] "только"  "том"     "тот"     "три"     "тут"     "ты"      "у"      
+[134] "уж"      "уже"     "хорошо"  "хоть"    "чего"    "чем"     "через"  
+[141] "что"     "чтоб"    "чтобы"   "чуть"    "эти"     "этого"   "этой"   
+[148] "этом"    "этот"    "эту"     "я"      </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Добавляем дополнительные стоп-слова</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>other <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">" "</span>, <span class="st">""</span>, <span class="st">"это"</span>, <span class="st">"который"</span>, <span class="st">"роза"</span>, </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>           <span class="st">"весь"</span>, <span class="st">"мочь"</span>, <span class="st">"свой"</span>, <span class="st">"твой"</span>, <span class="st">"очень"</span>, </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>           <span class="st">"каждый"</span>, <span class="st">"ваш"</span>, <span class="st">"изза"</span>, <span class="st">"поэтому"</span>, </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>           <span class="st">"хотя"</span>, <span class="st">"сразу"</span>, <span class="st">"наш"</span>, <span class="st">"все"</span>, <span class="st">"еще"</span>, <span class="st">"ее"</span>, <span class="st">"её"</span>, </span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>           <span class="st">"тебе"</span>, <span class="st">"твое"</span>, <span class="st">"кроме"</span>, <span class="st">"мои"</span>, <span class="st">"dieser"</span>, <span class="st">"in"</span>, </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>           <span class="st">"der"</span>, <span class="st">"dir"</span>, <span class="st">"dein"</span>, <span class="st">"die"</span>, <span class="st">"den"</span>, <span class="st">"ich"</span>, <span class="st">"und"</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>           <span class="st">"всё"</span>, <span class="st">"ещё"</span>, <span class="st">"твоё"</span>, <span class="st">"моё"</span>, <span class="st">"неё"</span>, <span class="st">"которые"</span>, </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>           <span class="st">"моей"</span>, <span class="st">"лишь"</span>, <span class="st">"своей"</span>, <span class="st">"моего"</span>, <span class="st">"которых"</span>, </span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>           <span class="st">"таких"</span>, <span class="st">"таким"</span>, <span class="st">"своими"</span>, <span class="st">"ними"</span>, <span class="st">"также"</span>, <span class="st">"мной"</span>, </span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>           <span class="st">"крайней"</span>, <span class="st">"мере"</span>, <span class="st">"конце"</span>, <span class="st">"концов"</span>, <span class="st">"которой"</span>, </span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>           <span class="st">"которое"</span>, <span class="st">"вообще"</span>, <span class="st">"свои"</span>, <span class="st">"которая"</span>, <span class="st">"например"</span>, </span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>           <span class="st">"такие"</span>, <span class="st">"этим"</span>, <span class="st">"такую"</span>, <span class="st">"эта"</span>, <span class="st">"каким"</span>, <span class="st">"которую"</span>, </span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>           <span class="st">"to"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<p><strong>3. Удаляем стоп-слова. Делаем две tidy таблицы</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Делаем tidy таблицу с лемматизированными данными: </span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Переименовываем колонку lemma</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>all_roza_ann_tbl <span class="ot">&lt;-</span> all_roza_ann_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> lemma)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Переводим колонку word в нижний регистр</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Удаляем все знаки препинания из столбца word</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Убираем все комбинации ".»", встречающиеся перед границей слова в столбце lemma</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Удаляем стоп слова + доп. стоп-слова</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>all_roza_tidy <span class="ot">&lt;-</span> all_roza_ann_tbl <span class="sc">|&gt;</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">tolower</span>(<span class="fu">str_trim</span>(word))) <span class="sc">|&gt;</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">gsub</span>(<span class="st">"[[:punct:]]"</span>, <span class="st">""</span>, word)) <span class="sc">|&gt;</span> </span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lemma =</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">.»</span><span class="sc">\\</span><span class="st">b"</span>, <span class="st">""</span>, lemma)) <span class="sc">|&gt;</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(<span class="fu">tibble</span>(<span class="at">word =</span> stopwords_ru)) <span class="sc">|&gt;</span> </span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> other)</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>all_roza_tidy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60,833 × 12
+   doc_id     sentence_id token_id token lemma upos  feats head_token_id dep_rel
+   &lt;chr&gt;            &lt;int&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt;  
+ 1 Другая Ро…           1 2        Пись… пись… NOUN  Anim… 0             root   
+ 2 Другая Ро…           1 5        восп… восп… NOUN  Anim… 2             nsubj:…
+ 3 Другая Ро…           1 9        запе… запе… VERB  Aspe… 5             parata…
+ 4 Другая Ро…           1 10       кровь кровь NOUN  Anim… 9             nsubj  
+ 5 Другая Ро…           1 11       собы… собы… NOUN  Anim… 10            nmod   
+ 6 Другая Ро…           1 16       прош… прой… ADJ   Case… 9             conj   
+ 7 Другая Ро…           1 19       оно   оно   PRON  Case… 16            obl    
+ 8 Другая Ро…           1 22       заде… заде… VERB  Aspe… 16            conj   
+ 9 Другая Ро…           1 24       нетл… нетл… ADJ   Case… 22            obl    
+10 Другая Ро…           2 1        Герц… Герц… ADJ   Degr… 18            obl    
+# ℹ 60,823 more rows
+# ℹ 3 more variables: deps &lt;chr&gt;, misc &lt;chr&gt;, word &lt;chr&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Делаем tidy таблицу с токенизированными данными</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Необходимость в токенизированной таблице возникала из-за грязных исходных данных.</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Невычитанный текст с множеством опечаток и ошибок неверно лемматизировался.</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>rp_token_tidy <span class="ot">&lt;-</span> all_roza_tokens <span class="sc">|&gt;</span> </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(<span class="fu">tibble</span>(<span class="at">word =</span> stopwords_ru)) <span class="sc">|&gt;</span> </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> other)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>rp_token_tidy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 63,597 × 3
+   title       link                             word        
+   &lt;chr&gt;       &lt;chr&gt;                            &lt;chr&gt;       
+ 1 Другая Роза https://proza.ru/2014/04/05/1003 письма      
+ 2 Другая Роза https://proza.ru/2014/04/05/1003 воспоминания
+ 3 Другая Роза https://proza.ru/2014/04/05/1003 запеклась   
+ 4 Другая Роза https://proza.ru/2014/04/05/1003 кровь       
+ 5 Другая Роза https://proza.ru/2014/04/05/1003 событий     
+ 6 Другая Роза https://proza.ru/2014/04/05/1003 само        
+ 7 Другая Роза https://proza.ru/2014/04/05/1003 прошедшее   
+ 8 Другая Роза https://proza.ru/2014/04/05/1003 оно         
+ 9 Другая Роза https://proza.ru/2014/04/05/1003 задержанное 
+10 Другая Роза https://proza.ru/2014/04/05/1003 нетленное   
+# ℹ 63,587 more rows</code></pre>
+</div>
 </div>
 
 
