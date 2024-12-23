@@ -2,6 +2,7 @@
 title: "Данные"
 subtitle: "На этой странице: <br>сбор и предобработка данных. Код и комментарии к нему."
 format: html
+df-print: paged
 warning: FALSE
 editor: visual
 ---

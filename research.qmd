@@ -2,6 +2,7 @@
 title: "Исследования"
 subtitle: "Переходим к исследованию полученных данных."
 format: html
+df-print: paged
 warning: FALSE
 editor: visual
 ---
@@ -242,3 +243,61 @@ wordcloud2(data = mimi_neighbors,
            shape = 'circle',                   
            minSize = 1)
 ```
+<br/>
+
+**7. 2D визуализация пространства слов**
+
+```{r}
+# 2D визуализация пространства слов
+library(umap)
+
+# Преобразование данных в матрицу
+rp_emb_mx <- clean_rp_emb |> 
+  cast_sparse(word, dimension, value) |> 
+  as.matrix()
+
+
+# UMAP2, снизили количество n_neighbors c 15 до 10
+set.seed(02062024)
+viz2 <- umap(rp_emb_mx, n_neighbors = 10, n_threads = 2)$layout
+
+
+# Проверяем размеры результата
+dim(viz2) # 20700 - 2
+
+# Построение графика viz2 - работает, увеличили ширину и высоту position_jitter
+tibble(word = rownames(rp_emb_mx), 
+       V1 = viz2[, 1], 
+       V2 = viz2[, 2]) |> 
+  ggplot(aes(x = V1, y = V2, label = word)) + 
+  geom_text(size = 2, alpha = 0.4, position = position_jitter(width = 1, height = 1)) +
+  annotate(geom = "rect", ymin = 2.5, ymax = 7, xmin = 1.5, xmax = 6.5, alpha = 0.2, color = "tomato") +
+  theme_light()
+
+# приближение
+tibble(word = rownames(rp_emb_mx), 
+       V1 = viz2[, 1], 
+       V2 = viz2[, 2]) |> 
+  filter(V1 > 1.5 & V1 < 6.5) |> 
+  filter(V2 > 2.5 & V2 < 7) |> 
+  ggplot(aes(x = V1, y = V2, label = word)) + 
+  geom_text(size = 2, alpha = 0.4, position = position_jitter(width = 0.5, height = 0.5)) +
+  theme_light()
+
+```
+<br/>
+
+**Промежуточный итог исследования**
+
+На осмысление и просто даже фиксацию всех находок, наблюдений и гипотез времени не хватило. На последней закладке сайта планировалось поместить найденные интересные тексты из корпуса, надеюсь это в ближайшем будущем доделать. 
+
+Чтобы закончить на высокой ноте привожу "ближайших соседей" облаков.
+
+```{r}
+sky_neighbors <- clean_rp_emb |> 
+  nearest_neighbors("небе")
+
+sky_neighbors
+```
+
+

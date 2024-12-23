@@ -100,6 +100,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
 
 </head>
@@ -258,28 +260,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(lemma, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(propn_list, <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>              lemma   n
-1            Берлин 142
-2             Клара  61
-3          ROZA_Роз  51
-4        NIU_Ниуниу  50
-5            Россия  39
-6            Цеткин  39
-7         Швейцария  37
-8          Германия  36
-9         Штуттгарт  32
-10           Польша  27
-11  MATILDA_Матильд  26
-12         Дифенбах  25
-13       Люксембург  25
-14        Рождество  23
-15           Цюрихо  22
-16           Вронка  17
-17        Франкфурт  17
-18           Меринг  16
-19        Штуттгард  16
-20 MATILDA_Матильда  13</code></pre>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["lemma"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"Берлин","2":"142","_rn_":"1"},{"1":"Клара","2":"61","_rn_":"2"},{"1":"ROZA_Роз","2":"51","_rn_":"3"},{"1":"NIU_Ниуниу","2":"50","_rn_":"4"},{"1":"Россия","2":"39","_rn_":"5"},{"1":"Цеткин","2":"39","_rn_":"6"},{"1":"Швейцария","2":"37","_rn_":"7"},{"1":"Германия","2":"36","_rn_":"8"},{"1":"Штуттгарт","2":"32","_rn_":"9"},{"1":"Польша","2":"27","_rn_":"10"},{"1":"MATILDA_Матильд","2":"26","_rn_":"11"},{"1":"Дифенбах","2":"25","_rn_":"12"},{"1":"Люксембург","2":"25","_rn_":"13"},{"1":"Рождество","2":"23","_rn_":"14"},{"1":"Цюрихо","2":"22","_rn_":"15"},{"1":"Вронка","2":"17","_rn_":"16"},{"1":"Франкфурт","2":"17","_rn_":"17"},{"1":"Меринг","2":"16","_rn_":"18"},{"1":"Штуттгард","2":"16","_rn_":"19"},{"1":"MATILDA_Матильда","2":"13","_rn_":"20"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 </div>
 <p>Подробнее о нескольких из упоминаемых персоналий.</p>
@@ -292,57 +278,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><em>DZIO_ДзиоДзио.</em> [Позже добавлю фото и биографию].</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Лео Йогишес</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>yogishes_qty <span class="ot">&lt;-</span> all_roza_ann_tbl <span class="sc">|&gt;</span> </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(lemma <span class="sc">==</span> <span class="st">"йогишес"</span> <span class="sc">|</span> lemma <span class="sc">==</span> <span class="st">"Йогишес"</span> </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>         <span class="sc">|</span> lemma <span class="sc">==</span> <span class="st">"иогишес"</span> <span class="sc">|</span> lemma <span class="sc">==</span> <span class="st">"иогихес"</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>         <span class="sc">|</span> lemma <span class="sc">==</span> <span class="st">"Лео"</span> <span class="sc">|</span> lemma <span class="sc">==</span> <span class="st">"лео"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(doc_id, lemma, token, upos, feats) |&gt; </span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lemma, token)</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># он же, но уже под другим именем </span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>dzio_qty <span class="ot">&lt;-</span> all_roza_ann_tbl <span class="sc">|&gt;</span> </span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(lemma, <span class="st">"DZIO_"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(doc_id, lemma, token, upos, feats)</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lemma, token)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># объединяем Лео</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>leo_yogishes_qty <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  yogishes_qty,</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  dzio_qty</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(leo_yogishes_qty<span class="sc">$</span>token)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Лео Йогишес</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>yogishes_qty <span class="ot">&lt;-</span> all_roza_ann_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(lemma <span class="sc">==</span> <span class="st">"йогишес"</span> <span class="sc">|</span> lemma <span class="sc">==</span> <span class="st">"Йогишес"</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>         <span class="sc">|</span> lemma <span class="sc">==</span> <span class="st">"иогишес"</span> <span class="sc">|</span> lemma <span class="sc">==</span> <span class="st">"иогихес"</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>         <span class="sc">|</span> lemma <span class="sc">==</span> <span class="st">"Лео"</span> <span class="sc">|</span> lemma <span class="sc">==</span> <span class="st">"лео"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(doc_id, lemma, token, upos, feats) |&gt; </span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lemma, token)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># он же, но уже под другим именем </span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>dzio_qty <span class="ot">&lt;-</span> all_roza_ann_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(lemma, <span class="st">"DZIO_"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(doc_id, lemma, token, upos, feats)</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lemma, token)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># объединяем Лео</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>leo_yogishes_qty <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  yogishes_qty,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  dzio_qty</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(leo_yogishes_qty<span class="sc">$</span>token)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "Лео"              "Йогишес"          "Йогишесу"         "DZIO_Циуциа"     
  [5] "DZIO_Дциодцио"    "DZIO_Циуция"      "DZIO_Дциодциу"    "DZIO_Циуцихну"   
  [9] "DZIO_Циуциухна"   "DZIO_Дциодциука"  "DZIO_Дциодциус"   "DZIO_Дциодциа"   
 [13] "DZIO_Дциодциухна" "DZIO_Дциодциниа"  "DZIO_Диудиу"      "DZIO_Диудиуку"   </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Сортируем имена Лео Йогишеса по частоте использования в повести.</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>leo_yogishes_qty <span class="sc">|&gt;</span> </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(token) <span class="sc">|&gt;</span>  <span class="co"># Считаем token</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>              token   n
-1               Лео 217
-2           Йогишес  14
-3     DZIO_Дциодциу  13
-4    DZIO_Дциодциус  11
-5       DZIO_Диудиу   8
-6     DZIO_Дциодцио   8
-7  DZIO_Дциодциухна   5
-8   DZIO_Дциодциниа   2
-9       DZIO_Циуциа   2
-10      DZIO_Циуция   2
-11    DZIO_Диудиуку   1
-12    DZIO_Дциодциа   1
-13  DZIO_Дциодциука   1
-14   DZIO_Циуциухна   1
-15    DZIO_Циуцихну   1
-16         Йогишесу   1</code></pre>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Сортируем имена Лео Йогишеса по частоте использования в повести.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>leo_yogishes_qty <span class="sc">|&gt;</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(token) <span class="sc">|&gt;</span>  <span class="co"># Считаем token</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["token"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"Лео","2":"217"},{"1":"Йогишес","2":"14"},{"1":"DZIO_Дциодциу","2":"13"},{"1":"DZIO_Дциодциус","2":"11"},{"1":"DZIO_Диудиу","2":"8"},{"1":"DZIO_Дциодцио","2":"8"},{"1":"DZIO_Дциодциухна","2":"5"},{"1":"DZIO_Дциодциниа","2":"2"},{"1":"DZIO_Циуциа","2":"2"},{"1":"DZIO_Циуция","2":"2"},{"1":"DZIO_Диудиуку","2":"1"},{"1":"DZIO_Дциодциа","2":"1"},{"1":"DZIO_Дциодциука","2":"1"},{"1":"DZIO_Циуциухна","2":"1"},{"1":"DZIO_Циуцихну","2":"1"},{"1":"Йогишесу","2":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 </div>
 <p><br></p>
@@ -354,25 +328,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><em>NIU_Ниуниу</em> [Позже добавлю фото и биографию].</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ищем Костю Цеткина</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>kostya_qty <span class="ot">&lt;-</span> all_roza_ann_tbl <span class="sc">|&gt;</span> </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(lemma, <span class="st">"KOSTYA_"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(doc_id, lemma, token, upos, feats) |&gt; </span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lemma, token)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># он же</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>niu_qty <span class="ot">&lt;-</span> all_roza_ann_tbl <span class="sc">|&gt;</span> </span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(lemma, <span class="st">"NIU_"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(doc_id, lemma, token, upos, feats)|&gt;</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lemma, token)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># объединяем Костю</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>kostya_tsetkin_qty <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  kostya_qty,</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  niu_qty</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(kostya_tsetkin_qty<span class="sc">$</span>token)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ищем Костю Цеткина</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>kostya_qty <span class="ot">&lt;-</span> all_roza_ann_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(lemma, <span class="st">"KOSTYA_"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(doc_id, lemma, token, upos, feats) |&gt; </span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lemma, token)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># он же</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>niu_qty <span class="ot">&lt;-</span> all_roza_ann_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(lemma, <span class="st">"NIU_"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(doc_id, lemma, token, upos, feats)|&gt;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lemma, token)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># объединяем Костю</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>kostya_tsetkin_qty <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  kostya_qty,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  niu_qty</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(kostya_tsetkin_qty<span class="sc">$</span>token)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "KOSTYA_Косте"      "KOSTYA_Костю"      "KOSTYA_Костя"     
  [4] "KOSTYA_Костей"     "KOSTYA_Костик"     "KOSTYA_Кости"     
@@ -384,37 +358,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 [22] "NIU_Нииуниу"       "NIU_Ниунисия"      "NIU_Ниунийчика"   
 [25] "NIU_Ниуниуш"      </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Есть ошибки присвоения маркеров, но их доля невелика</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>kostya_tsetkin_qty <span class="sc">|&gt;</span> </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(token) <span class="sc">|&gt;</span>  <span class="co"># Считаем token</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>               token   n
-1         NIU_Ниуниу 110
-2       KOSTYA_Костя  71
-3       KOSTYA_Косте  66
-4       KOSTYA_Кости  37
-5      KOSTYA_Костей  33
-6        NIU_Ниуниус  20
-7       KOSTYA_Костю  17
-8         NIU_Ниуниа  14
-9      KOSTYA_Костик   6
-10     KOSTYA_костюм   2
-11 KOSTYA_Костерское   1
-12     KOSTYA_Костин   1
-13    KOSTYA_Костина   1
-14  KOSTYA_Костиного   1
-15    KOSTYA_Костины   1
-16   KOSTYA_Костиным   1
-17    KOSTYA_Костюша   1
-18    KOSTYA_костюме   1
-19     KOSTYA_костях   1
-20       NIU_Нииуниу   1
-21    NIU_Ниунийчика   1
-22       NIU_Ниуника   1
-23      NIU_Ниунисия   1
-24      NIU_Ниуниуку   1
-25       NIU_Ниуниуш   1</code></pre>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Есть ошибки присвоения маркеров, но их доля невелика</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>kostya_tsetkin_qty <span class="sc">|&gt;</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(token) <span class="sc">|&gt;</span>  <span class="co"># Считаем token</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["token"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"NIU_Ниуниу","2":"110"},{"1":"KOSTYA_Костя","2":"71"},{"1":"KOSTYA_Косте","2":"66"},{"1":"KOSTYA_Кости","2":"37"},{"1":"KOSTYA_Костей","2":"33"},{"1":"NIU_Ниуниус","2":"20"},{"1":"KOSTYA_Костю","2":"17"},{"1":"NIU_Ниуниа","2":"14"},{"1":"KOSTYA_Костик","2":"6"},{"1":"KOSTYA_костюм","2":"2"},{"1":"KOSTYA_Костерское","2":"1"},{"1":"KOSTYA_Костин","2":"1"},{"1":"KOSTYA_Костина","2":"1"},{"1":"KOSTYA_Костиного","2":"1"},{"1":"KOSTYA_Костины","2":"1"},{"1":"KOSTYA_Костиным","2":"1"},{"1":"KOSTYA_Костюша","2":"1"},{"1":"KOSTYA_костюме","2":"1"},{"1":"KOSTYA_костях","2":"1"},{"1":"NIU_Нииуниу","2":"1"},{"1":"NIU_Ниунийчика","2":"1"},{"1":"NIU_Ниуника","2":"1"},{"1":"NIU_Ниунисия","2":"1"},{"1":"NIU_Ниуниуку","2":"1"},{"1":"NIU_Ниуниуш","2":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 </div>
 <p><br></p>
@@ -426,19 +379,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Загадочная <em>Мими.</em> При лемматизации эта Мими упорно превращалась в слово “мой”. Заглянула в тексты, где она упоминается - выходило, что это какое-то животное? Обратим на нее внимание! Продолжение ее истории дальше.</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ищем собачку/кошечку Мими, лемматизированную как "мой"</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>mimi_qty <span class="ot">&lt;-</span> all_roza_ann_tbl <span class="sc">|&gt;</span> </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(lemma, <span class="st">"MIMI_"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, lemma, token, upos, feats)</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>mimi_qty <span class="sc">|&gt;</span> </span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(token) <span class="sc">|&gt;</span>  <span class="co"># Считаем token</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>            token   n
-1       MIMI_Мими 138
-2    MIMI_Мимичка   1
-3 MIMI_Мимишенька   1</code></pre>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ищем собачку/кошечку Мими, лемматизированную как "мой"</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>mimi_qty <span class="ot">&lt;-</span> all_roza_ann_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(lemma, <span class="st">"MIMI_"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, lemma, token, upos, feats)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>mimi_qty <span class="sc">|&gt;</span> </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(token) <span class="sc">|&gt;</span>  <span class="co"># Считаем token</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["token"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"MIMI_Мими","2":"138"},{"1":"MIMI_Мимичка","2":"1"},{"1":"MIMI_Мимишенька","2":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 </div>
 

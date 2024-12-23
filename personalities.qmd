@@ -2,6 +2,7 @@
 title: "Персоналии"
 subtitle: "Расскажем о героях повести."
 format: html
+df-print: paged
 warning: FALSE
 editor: visual
 ---

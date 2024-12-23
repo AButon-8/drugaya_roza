@@ -30,7 +30,7 @@ format:
     toc-location: left
     toc-title: Страницы
     page-layout: full
-    df-print: tibble
+    df-print: paged
     grid:
       sidebar-width: 250px
 
