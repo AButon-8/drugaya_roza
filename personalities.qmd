@@ -80,7 +80,8 @@ persona2_qty <- all_roza_ann_tbl |>
   select(doc_id, lemma, token, upos, feats) |>
   count(lemma, sort = TRUE)
 
-head(propn_list, 20)
+# head(propn_list, 20)
+persona2_qty
 
 ```
 

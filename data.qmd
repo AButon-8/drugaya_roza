@@ -96,7 +96,7 @@ all_links <- all_links |>
 all_roza_urls <- all_links |> 
   pull(link)
 
-print(all_roza_urls)
+# print(all_roza_urls)
 ```
 
 <br/>
