@@ -16,8 +16,8 @@ df-print: paged #оформление таблиц
 code-annotations: hover
 fig-align: left
 warning: FALSE
-#bibliography: roza_proza.bib
-csl: gost-r-7-0-5-2008-numeric-alphabetical.csl
+bibliography: drugaya_roza.bib
+#csl: gost-r-7-0-5-2008-numeric-alphabetical.csl
 embed-resources: true
 standalone: true
 ---
