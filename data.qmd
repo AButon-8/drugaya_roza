@@ -124,8 +124,6 @@ raw_roza_texts_tbl <- raw_all_roza_texts |>
 all_roza_proza <- all_links |> 
   mutate(text = raw_roza_texts_tbl)
 
-print(all_roza_proza(1:5))
-
 ```
 
 <br/>
@@ -166,13 +164,24 @@ all_roza_cleaned <- all_roza_proza |>
 <br/> **Скачиваем и загружаем модель. Аннотируем.**
 
 ```{r}
-
 # Создаем папку models, если её ещё нет
 if (!dir.exists("models")) {
   dir.create("models")
 }
 
-echo "models/" >> .gitignore
+# Добавляем models/ в .gitignore, если её там нет
+if (!file.exists(".gitignore")) {
+  write("models/", file = ".gitignore")
+} else {
+  # Читаем содержимое .gitignore
+  gitignore_content <- readLines(".gitignore")
+  
+  # Проверяем, есть ли уже models/
+  if (!"models/" %in% gitignore_content) {
+    # Добавляем строку в конец файла, если её нет
+    write("models/", file = ".gitignore", append = TRUE)
+  }
+}
 
 # Указываем путь к модели
 model_path <- "models/russian-syntagrus-ud-2.5-191206.udpipe"
@@ -190,6 +199,7 @@ russian_syntagrus <- udpipe_load_model(file = model_path)
 
 # Отобразим текст в документе Quarto
 cat("Модель успешно загружена и готова к использованию.")
+
 
 ```
 

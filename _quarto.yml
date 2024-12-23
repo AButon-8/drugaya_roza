@@ -12,7 +12,7 @@ website:
         text: О Розе
       - href: data.qmd
         text: Данные
-      - href: personalies.qmd
+      - href: personalities.qmd
         text: Герои
       - href: research.qmd
         text: Исследования

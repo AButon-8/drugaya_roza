@@ -1,12 +1,17 @@
 ---
 title: "Исследования"
-subtitle: "Здесь будут мои находки и открытия."
+subtitle: "Переходим к исследованию полученных данных."
 format: html
 warning: FALSE
 editor: visual
 ---
 
-## Quarto
+<br/>
+
+## Векторное представление слов
+
+<br/> 
+Строим эмбеддинги, взяв за основу матрицу термин-термин.
 
 ```{r}
 library(tidyverse)
@@ -21,11 +26,99 @@ library(readr)
 
 ```
 
+<br/>
+
+**1. Скользящее окно**
+
 ```{r}
+# Загружаем заранее сохраненные данные
 all_roza_tidy <- read.csv("docs/all_roza_tidy.csv")
 rp_token_tidy <- read.csv("docs/rp_token_tidy.csv")
 
+# "Гнездуем")) токены по главам повести для дальнейшего деления на окна
+#nested_proza <- all_roza_tokens |> 
+#  dplyr::select(-link) |> 
+#  nest(token = c(word))
+
+# NEW "Гнездуем" почищенные токены
+clean_nested_proza <- rp_token_tidy |> 
+  dplyr::select(-link) |> 
+  nest(token = c(word))
 ```
+
+<br/>
+
+**2. Создаем функцию для деления со сдвигом**
+
+```{r}
+slide_windows <- function(tbl, window_size) {
+  skipgrams <- slider::slide(
+    tbl, 
+    ~.x, 
+    .after = window_size - 1, 
+    .step = 1, 
+    .complete = TRUE
+  )
+  
+  safe_mutate <- safely(mutate)
+  
+  out <- map2(.x = skipgrams,
+              .y = 1:length(skipgrams), # Генерация последовательности индексов
+              ~ safe_mutate(.x, window_id = .y))
+  
+  out |> 
+    transpose() |> 
+    pluck("result") |> 
+    compact() |> 
+    bind_rows()
+}
+
+```
+
+<br/>
+
+**3. Делим на окна**
+
+```{r}
+# Ширина окна 10L - .after = window_size - 1 дает 11.
+# unnest - распаковываем токены
+# unite - достаем слова из столбца со словами и у нас отдельно window_id и название документа
+#proza_windows <- nested_proza |> 
+#  mutate(token = map(token, slide_windows, 10L)) |>  
+#  unnest(token) |>  
+#  unite(window_id, title, window_id)
+
+
+# NEW То же самое делаем с почищенным файлом
+clean_proza_windows <- clean_nested_proza |> 
+  mutate(token = map(token, slide_windows, 10L)) |>  
+  unnest(token) |>  
+  unite(window_id, title, window_id)
+```
+
+<br/>
+
+**4. Считаем PMI и PPMI**
+
+```{r}
+library(widyr)
+
+clean_rp_pmi <- clean_proza_windows |>
+  pairwise_pmi(word, window_id)
+
+# всего значений/токенов/координат
+clean_rp_pmi$item1 |> unique() |> length() # 20710
+
+
+# Positive PPMI
+clean_rp_ppmi <- clean_rp_pmi |> 
+  mutate(ppmi = case_when(pmi < 0 ~ 0,
+                          .default = pmi))
+
+clean_rp_ppmi |> 
+  arrange(pmi)
+```
+
 
 ```{r}
 # Смотрим абсолютную частотность лемматизированного текста
