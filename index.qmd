@@ -1,8 +1,25 @@
 ---
-title: "index.qmd"
+title: "Другая Роза"
+subtitle: "Письма Розы Люксембург <br> в переводе Маргариты Школьниксон-Смишко"
+author: "Анастасия Богданова"
+date: today
+date-format: D.MM.YYYY
 format: html
 editor: visual
----2
+abstract: "Письма — больше чем воспоминания, на них запеклась кровь событий, это — само прошедшее, как оно было, задержанное и нетленное. (*А.И. Герцен. Былое и думы.*)"
+lang: ru
+toc: true #оглавление
+toc-location: left
+# number-sections: false #нумерация оглавления
+# theme: journal
+df-print: paged #оформление таблиц
+code-annotations: hover
+fig-align: left
+warning: FALSE
+#bibliography: roza_proza.bib
+csl: gost-r-7-0-5-2008-numeric-alphabetical.csl
+embed-resources: true
+standalone: true
 ---
 
 ## Quarto
