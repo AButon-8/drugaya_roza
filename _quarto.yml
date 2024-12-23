@@ -1,0 +1,36 @@
+project:
+  type: website
+  output-dir: "docs"
+
+website:
+  title: "«Другая Роза» на сайте proza.ru"
+  navbar:
+    background: primary
+    search: true
+    left:
+      - href: index.qmd
+        text: О Розе
+      - href: data.qmd
+        text: Данные
+      - href: personalies.qmd
+        text: Герои
+      - href: research.qmd
+        text: Исследования
+      - href: texts.qmd
+        text: Тексты
+
+format:
+  html:
+    theme: 
+     - lumen
+     - custom.scss
+    fontsize: "14pt"
+    fontcolor: "#555555"
+    toc: true
+    toc-location: left
+    toc-title: Страницы
+    page-layout: full
+    grid:
+      sidebar-width: 250px
+
+bibliography: roza_proza.bib
