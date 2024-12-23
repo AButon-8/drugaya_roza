@@ -9,8 +9,21 @@ editor: visual
 ## Quarto
 
 ```{r}
-all_roza_tidy <- read.csv("docs/data/all_roza_tidy.csv")
-rp_token_tidy <- read.csv("docs/data/rp_token_tidy.csv")
+library(tidyverse)
+library(rvest)
+library(tidytext)
+library(tokenizers)
+library(udpipe)
+library(dplyr)
+library(ggplot2)
+library(wordcloud)
+library(readr)
+
+```
+
+```{r}
+all_roza_tidy <- read.csv("docs/all_roza_tidy.csv")
+rp_token_tidy <- read.csv("docs/rp_token_tidy.csv")
 
 ```
 
