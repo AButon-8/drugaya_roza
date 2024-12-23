@@ -1,0 +1,41 @@
+---
+title: "Исследования"
+subtitle: "Здесь будут мои находки и открытия."
+format: html
+warning: FALSE
+editor: visual
+---
+
+## Quarto
+
+```{r}
+all_roza_tidy <- read.csv("docs/data/all_roza_tidy.csv")
+rp_token_tidy <- read.csv("docs/data/rp_token_tidy.csv")
+
+```
+
+```{r}
+# Смотрим абсолютную частотность лемматизированного текста
+library(ggplot2)
+
+all_roza_tidy |> 
+  count(word, sort = TRUE) |> 
+  slice_head(n = 50) |> 
+  ggplot(aes(reorder(word, n), n, fill = word)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(x = NULL, y = NULL)
+
+```
+
+```{r}
+# Абсолютная частотность токенизированного текста
+rp_token_tidy |> 
+  count(word, sort = TRUE) |> 
+  slice_head(n = 50) |> 
+  ggplot(aes(reorder(word, n), n, fill = word)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(x = NULL, y = NULL)
+
+```

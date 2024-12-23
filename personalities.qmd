@@ -1,0 +1,37 @@
+---
+title: "Персоналии"
+subtitle: "Расскажем о героях повести."
+format: html
+warning: FALSE
+editor: visual
+---
+
+<br/>
+
+## Имена собственные
+
+<br/> 
+Аннотированный текст дал возможность выделить и посчитать все имена собственные, распознанные в тексте.
+
+```{r}
+library(tidyverse)
+library(rvest)
+library(tidytext)
+library(tokenizers)
+library(udpipe)
+library(dplyr)
+library(ggplot2)
+library(wordcloud)
+library(readr)
+
+# Загружаем тибл, полученный на прошлом этапе исследования.
+all_roza_ann_tbl <- read.csv("docs/all_roza_ann_tbl.csv")
+
+# Находим все имена собственные в аннотированном тексте, считаем леммы
+propn_list <- all_roza_ann_tbl |>
+  filter(upos == "PROPN") |> 
+  filter(str_detect(feats, "Animacy=Inan")) |> 
+  count(lemma) |> 
+  arrange(-n)
+
+propn_list
