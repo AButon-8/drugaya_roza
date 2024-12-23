@@ -164,13 +164,50 @@ all_roza_cleaned <- all_roza_proza |>
 <br/> **Скачиваем и загружаем модель. Аннотируем.**
 
 ```{r}
+
+# Создаем папку models, если её ещё нет
+if (!dir.exists("models")) {
+  dir.create("models")
+}
+
+# Добавляем запись "models/" в .gitignore, если её там ещё нет
+if (!file.exists(".gitignore")) {
+  writeLines("models/", ".gitignore") # Создаем .gitignore, если его нет
+} else {
+  gitignore_content <- readLines(".gitignore")
+  if (!"models/" %in% gitignore_content) {
+    writeLines(c(gitignore_content, "models/"), ".gitignore") # Добавляем запись
+  }
+}
+
+# Указываем путь к модели
+model_path <- "models/russian-syntagrus-ud-2.5-191206.udpipe"
+
+# Проверяем, существует ли файл модели
+if (!file.exists(model_path)) {
+  message("Скачиваем модель...")
+  udpipe_download_model(language = "russian-syntagrus", model_dir = "models")
+} else {
+  message("Модель уже скачана.")
+}
+
+# Загружаем модель
+russian_syntagrus <- udpipe_load_model(file = model_path)
+
+# Отобразим текст в документе Quarto
+cat("Модель успешно загружена и готова к использованию.")
+
+
+```
+
+```{r}
 # Скачиваем модель в рабочую директорию
-#| echo: false
-udpipe_download_model(language = "russian-syntagrus")
+##| echo: false
+# udpipe_download_model(language = "russian-syntagrus")
 
 # загружаем модель
-#| echo: false
-russian_syntagrus <- udpipe_load_model(file = "russian-syntagrus-ud-2.5-191206.udpipe")
+##| echo: false
+#russian_syntagrus <- udpipe_load_model(file = "russian-syntagrus-ud-2.5-191206.udpipe")
 
 # Оператор присваивания создает переменную params.
 params <- tribble(
