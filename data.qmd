@@ -1,0 +1,157 @@
+---
+title: "Данные"
+subtitle: "На этой странице: сбор и предобработка данных. Код и комментарии к нему."
+format: html
+warning: FALSE
+editor: visual
+---
+
+------------------------------------------------------------------------
+
+<br/>
+
+## Сбор данных
+
+<br/> **1. Загружаем все необходимые для нашего исследования библиотеки.**
+
+```{r}
+library(tidyverse)
+library(rvest)
+library(tidytext)
+library(tokenizers)
+library(udpipe)
+library(dplyr)
+library(ggplot2)
+library(readr)
+```
+
+<br/>
+
+**2. Список переводов писем Розы Люксембург размещен на 4 веб-страницах, по 50 url на каждой. Соберем все 184 ссылки.**
+
+```{r}
+# первая страница с ссылками (0-50)
+url1 <- "https://proza.ru/avtor/cnamibog&s=0&book=45#45" 
+html1 <-  read_html(url1, encoding = "Windows-1251") # читаем html, меняем кодировку
+
+#.poemlink - список ссылок на нужные страницы, собранный с помощью SelectorGadget
+
+list_links1 <- html1 |> 
+  html_elements(".poemlink") # загружаем список ссылок
+
+
+# вторая страница с ссылками (51-100)
+url2 <- "https://proza.ru/avtor/cnamibog&s=50&book=45#45" 
+html2 <-  read_html(url2, encoding = "Windows-1251") # читаем html, меняем кодировку
+
+#.poemlink - список ссылок на нужные страницы, собранный с помощью SelectorGadget
+
+list_links2 <- html2 |> 
+  html_elements(".poemlink") # загружаем список ссылок
+
+
+# третья страница с ссылками (101-150)
+url3 <- "https://proza.ru/avtor/cnamibog&s=100&book=45#45" 
+html3 <-  read_html(url3, encoding = "Windows-1251") # читаем html, меняем кодировку
+
+#.poemlink - список ссылок на нужные страницы, собранный с помощью SelectorGadget
+
+list_links3 <- html3 |> 
+  html_elements(".poemlink") # загружаем список ссылок
+
+
+# четвертая страница с ссылками (151-184)
+url4 <- "https://proza.ru/avtor/cnamibog&s=150&book=45#45" 
+html4 <-  read_html(url4, encoding = "Windows-1251") # читаем html, меняем кодировку
+
+#.poemlink - список ссылок на нужные страницы, собранный с помощью SelectorGadget
+
+list_links4 <- html4 |> 
+  html_elements(".poemlink") # загружаем список ссылок
+```
+
+<br/>
+
+**3. Создадим таблицу с URL-ссылками на все 184 текста.**
+
+```{r}
+# Объединяем списки в один, частичный URL
+all_links <- list(list_links1, list_links2, list_links3, list_links4) |> 
+  map_dfr(~ tibble(
+    title = .x |> html_text2(),
+    id_text = .x |> html_attr("href")
+  ))
+
+# Выводим объединённую таблицу
+print(all_links)
+
+# Добавляем (paste0 += без пробела) протокол доступа и доменное имя. 
+# Получаем полные URL-адреса страниц с главами повести.
+all_links <- all_links |>
+  mutate(link = paste0("https://proza.ru", id_text)) 
+# select(-id_text) не делаю, id записи = дате публикации
+
+# Извлекаем список всех ссылок
+all_roza_urls <- all_links |> 
+  pull(link)
+
+print(all_roza_urls)
+```
+
+<br/>
+
+**4. Скрапинг текста**
+
+```{r}
+# Напишем функцию для скрапинга текста
+get_text <- function(url){
+  read_html(url, encoding = "Windows-1251") |> 
+    html_elements(".text") |> 
+    html_text2() |> 
+    paste(collapse=" ")
+}
+
+# Применим функцию к полному списку извлеченных ссылок. 
+# Получаем Large list.
+raw_all_roza_texts <- map(all_roza_urls, get_text)
+
+# Превращаем список в символьный вектор, а его в таблицу
+raw_roza_texts_tbl <- raw_all_roza_texts |> 
+  flatten_chr() |> 
+  as_tibble()
+
+# Объединяем две таблицы (ссылки, названия текстов и сами тексты)
+all_roza_proza <- all_links |> 
+  mutate(text = raw_roza_texts_tbl)
+```
+
+<br/>
+
+## Предобработка данных
+
+<br/> **Чистим данные с помощью регулярных выражений.**
+
+```{r}
+# Чистим регулярными выражениями
+# Переименовываем столбец
+# Удаляем HTML-теги
+# Унифицируем кавычки, апострофы
+# Убираем лишние переводы строки (включая пробелы вокруг них), заменяем их на пробел
+# Убираем звездочки перед словами (от примечаний)
+# Ставим перед записанными с ошибками именами МАРКЕР
+all_roza_cleaned <- all_roza_proza |>
+  mutate(text = text$value) |> 
+  mutate(text = str_remove_all(as.character(text), "<[^>]+>")) |>
+  mutate(text = str_replace_all(text, "[«»„”‘’]", "\"")) |> 
+  mutate(text = gsub("\\s*\\n+\\s*", " ", text)) |> 
+  mutate(text = gsub("\\b([Нн]и{1,2}у\\S*)", "NIU_\\1", text)) |> 
+  mutate(text = gsub("\\b([Кк]ост\\S*)", "KOSTYA_\\1", text)) |> 
+  mutate(text = gsub("\\b([Юю]{2}\\S*)", "YuYu_\\1", text)) |>
+  mutate(text = gsub("^[*]+", "", text)) |> 
+  mutate(text = str_replace_all(text, "\\b([Рр]оз(?!енфельд|енталь)(\\S*))", "ROZA_\\1")) |> 
+  mutate(text = gsub("\\b([Мм]ими)", "MIMI_\\1", text)) |> 
+  mutate(text = gsub("\\b([Дд][Цц]ио|[Цц]иу|[Дд]иу)\\S*", "DZIO_\\1", text)) |> 
+  mutate(text = gsub("\\b([Шш]ое|[Шш]оэ|[Шш]\\.)\\S*", "Schönlank_\\1", text)) |> 
+  mutate(text = gsub("\\b([Мм]атиль\\S*)", "MATILDA_\\1", text)) |> 
+  mutate(text = gsub("\\b([Лл]улу)", "LULU_\\1", text))
+```
