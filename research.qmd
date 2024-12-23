@@ -208,3 +208,37 @@ rp_token_tidy |>
   labs(x = NULL, y = NULL)
 
 ```
+<br/>
+
+**7. Блишайшие соседи**
+
+```{r}
+# Загружаем заранее сохраненную функцию ближайшие соседи
+
+source("docs/nearest_neighbors.R")
+
+
+mimi_neighbors <- clean_rp_emb |> 
+  nearest_neighbors("mimi_мими") # я узнала кто такая МИМИ!!!!
+
+```
+
+## Визуализируем Мими (точнее, ее соседей!)
+
+```{r}
+#облако слов - визуализируем МИМИ!!
+library(wordcloud2)
+pal <- c( "#9B251E", 
+          "#FFB3BA", "#FFDFBA", "#BAFFBF",
+          "#BAE1FF", "#FFE788", "#9B251E", 
+          "#BAFFBF", "#BAE1FF", "#FFE788", 
+          "#FFB3BA", "#FFDFBA",
+          "#BAE1FF", "#9B251E", "#FFE788", "#FFDFBA")
+
+wordcloud2(data = mimi_neighbors,
+           size = 1,                           
+           color = pal,                        
+           backgroundColor = "white", 
+           shape = 'circle',                   
+           minSize = 1)
+```
