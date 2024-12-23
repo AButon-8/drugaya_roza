@@ -118,7 +118,71 @@ clean_rp_ppmi <- clean_rp_pmi |>
 clean_rp_ppmi |> 
   arrange(pmi)
 ```
+<br/>
 
+**5. SVD на матрице с PPMI**
+
+```{r}
+clean_rp_emb <- clean_rp_ppmi |> 
+  widely_svd(item1, item2, ppmi,
+             weight_d = FALSE, nv = 100) |> 
+  rename(word = item1) # иначе nearest_neighbors() будет жаловаться
+
+```
+<br/>
+
+**6. Визуализация топиков**
+
+Топики с 1 по 9
+
+```{r}
+clean_rp_emb |> 
+  filter(dimension < 10) |> 
+  group_by(dimension) |> 
+  top_n(10, abs(value)) |> 
+  ungroup() |> 
+  mutate(word = reorder_within(word, value, dimension)) |> 
+  ggplot(aes(word, value, fill = dimension)) +
+  geom_col(alpha = 0.8, show.legend = FALSE) +
+  facet_wrap(~dimension, scales = "free_y", ncol = 3) +
+  scale_x_reordered() +
+  coord_flip() +
+  labs(
+    x = NULL, 
+    y = "Value",
+    title = "9 топиков Другой Розы",
+    subtitle = "Топ-9 слов"
+  ) +
+  scale_fill_viridis_c()
+
+```
+
+Топики с 10 по 19
+
+```{r}
+clean_rp_emb |> 
+  filter(dimension < 20 & dimension > 10) |> 
+  group_by(dimension) |> 
+  top_n(10, abs(value)) |> 
+  ungroup() |> 
+  mutate(word = reorder_within(word, value, dimension)) |> 
+  ggplot(aes(word, value, fill = dimension)) +
+  geom_col(alpha = 0.8, show.legend = FALSE) +
+  facet_wrap(~dimension, scales = "free_y", ncol = 3) +
+  scale_x_reordered() +
+  coord_flip() +
+  labs(
+    x = NULL, 
+    y = "Value",
+    title = "9 топиков Другой Розы",
+    subtitle = "Слова с 10 по 19"
+  ) +
+  scale_fill_viridis_c()
+
+```
+
+
+Для сравнения глубины исследования посмотрим на абсолютную частотность лемматизированного и токенизированного текста "Другой Розы"
 
 ```{r}
 # Смотрим абсолютную частотность лемматизированного текста
