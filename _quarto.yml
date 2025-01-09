@@ -24,7 +24,7 @@ format:
     theme: 
     # - lumen
      - journal
-     - custom.scss
+    # - custom.scss
     fontsize: "14pt"
     fontcolor: "#555555"
     toc: true
