@@ -22,7 +22,8 @@ website:
 format:
   html:
     theme: 
-     - lumen
+    # - lumen
+     - journal
      - custom.scss
     fontsize: "14pt"
     fontcolor: "#555555"
