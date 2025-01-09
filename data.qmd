@@ -2,7 +2,8 @@
 title: "Данные"
 subtitle: "На этой странице: <br>сбор и предобработка данных. Код и комментарии к нему."
 format: html
-theme: journal
+# theme: journal
+theme: simplex
 df-print: paged
 warning: FALSE
 editor: visual

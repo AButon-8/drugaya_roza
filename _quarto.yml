@@ -23,7 +23,8 @@ format:
   html:
     theme: 
     # - lumen
-     - journal
+    # - journal
+    - simplex
     # - custom.scss
     fontsize: "14pt"
     fontcolor: "#555555"
